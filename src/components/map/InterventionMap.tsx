@@ -109,6 +109,10 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
   // Centre sur le Cameroun
   const center: [number, number] = [7.3697, 12.3547];
 
+  // Ensure arrays are defined to prevent mapping issues
+  const safeInterventions = interventions || [];
+  const safeAgents = agents || [];
+
   return (
     <div className="h-full rounded-lg overflow-hidden border border-border">
       <MapContainer
@@ -125,7 +129,7 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
         <MapController />
 
         {/* Marqueurs d'interventions */}
-        {interventions.map((intervention) => (
+        {safeInterventions.length > 0 && safeInterventions.map((intervention) => (
           <Marker
             key={`intervention-${intervention.id}`}
             position={[intervention.latitude, intervention.longitude]}
@@ -141,7 +145,7 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
         ))}
 
         {/* Marqueurs d'agents */}
-        {agents.map((agent) => (
+        {safeAgents.length > 0 && safeAgents.map((agent) => (
           <Marker
             key={`agent-${agent.agentId}`}
             position={[agent.latitude, agent.longitude]}
@@ -151,6 +155,7 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
               <div className="p-2">
                 <h3 className="font-semibold">Agent #{agent.agentId}</h3>
                 <p className="text-sm text-gray-600">
+                  {agent.name && <span>{agent.name}<br /></span>}
                   Position: {agent.latitude.toFixed(4)}, {agent.longitude.toFixed(4)}
                 </p>
               </div>
