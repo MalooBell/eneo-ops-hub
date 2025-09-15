@@ -1,7 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon, DivIcon } from 'leaflet';
-import { MapPin, User } from 'lucide-react';
+import { DivIcon } from 'leaflet';
 import { useApp } from '@/contexts/AppContext';
 import { Intervention, Agent } from '@/types';
 import 'leaflet/dist/leaflet.css';
@@ -53,8 +52,12 @@ function MapController() {
   const { selectedIntervention } = useApp();
 
   useEffect(() => {
-    if (selectedIntervention) {
-      map.panTo([selectedIntervention.latitude, selectedIntervention.longitude]);
+    if (selectedIntervention && map) {
+      try {
+        map.panTo([selectedIntervention.latitude, selectedIntervention.longitude]);
+      } catch (error) {
+        console.log('Error panning to intervention:', error);
+      }
     }
   }, [selectedIntervention, map]);
 
@@ -111,7 +114,7 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
       <MapContainer
         center={center}
         zoom={6}
-        className="h-full w-full"
+        style={{ height: '100%', width: '100%' }}
         zoomControl={true}
       >
         <TileLayer
@@ -124,7 +127,7 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
         {/* Marqueurs d'interventions */}
         {interventions.map((intervention) => (
           <Marker
-            key={intervention.id}
+            key={`intervention-${intervention.id}`}
             position={[intervention.latitude, intervention.longitude]}
             icon={createInterventionIcon(intervention.status)}
           >
@@ -140,7 +143,7 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
         {/* Marqueurs d'agents */}
         {agents.map((agent) => (
           <Marker
-            key={agent.agentId}
+            key={`agent-${agent.agentId}`}
             position={[agent.latitude, agent.longitude]}
             icon={createAgentIcon()}
           >

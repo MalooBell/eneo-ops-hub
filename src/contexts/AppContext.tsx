@@ -36,12 +36,65 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const refreshData = async () => {
     try {
-      const [interventionsData, agentsData] = await Promise.all([
-        api.getInterventions(),
-        api.getOnlineAgents(),
-      ]);
-      setInterventions(interventionsData);
-      setAgents(agentsData);
+      // Données de démonstration en attendant que le backend soit disponible
+      const interventionsData: Intervention[] = [
+        {
+          id: 1,
+          zammadTicketId: 58,
+          status: 'NOUVEAU',
+          problemDescription: 'Bonjour, mon compteur semble tourner trop vite.',
+          latitude: 4.0511,
+          longitude: 9.7679,
+          agentId: null,
+          customerId: 38,
+          createdAt: '2025-09-14T14:30:00.000Z',
+          updatedAt: '2025-09-14T14:30:00.000Z'
+        },
+        {
+          id: 2,
+          zammadTicketId: 59,
+          status: 'ASSIGNE',
+          problemDescription: 'Panne d\'électricité dans mon quartier.',
+          latitude: 3.8480,
+          longitude: 11.5021,
+          agentId: 77,
+          customerId: 42,
+          createdAt: '2025-09-14T15:45:00.000Z',
+          updatedAt: '2025-09-14T16:00:00.000Z'
+        },
+        {
+          id: 3,
+          zammadTicketId: 60,
+          status: 'RESOLU',
+          problemDescription: 'Facture incorrecte reçue ce mois.',
+          latitude: 4.0792,
+          longitude: 9.2818,
+          agentId: 78,
+          customerId: 45,
+          createdAt: '2025-09-14T13:20:00.000Z',
+          updatedAt: '2025-09-14T17:30:00.000Z'
+        }
+      ];
+
+      const agentsData: Agent[] = [
+        { agentId: 77, latitude: 3.8600, longitude: 11.5200, name: 'Agent Jean Dupont' },
+        { agentId: 78, latitude: 4.0800, longitude: 9.2900, name: 'Agent Marie Kenne' },
+        { agentId: 79, latitude: 4.0400, longitude: 9.7500, name: 'Agent Paul Mbida' }
+      ];
+
+      // Tenter l'API d'abord, sinon utiliser les données de démo
+      try {
+        const [interventionsResponse, agentsResponse] = await Promise.all([
+          api.getInterventions(),
+          api.getOnlineAgents(),
+        ]);
+        setInterventions(interventionsResponse);
+        setAgents(agentsResponse);
+      } catch (apiError) {
+        console.log('Backend non disponible, utilisation des données de démonstration');
+        setInterventions(interventionsData);
+        setAgents(agentsData);
+      }
     } catch (error) {
       console.error('Erreur lors du rafraîchissement des données:', error);
       toast({

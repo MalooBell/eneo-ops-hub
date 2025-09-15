@@ -110,12 +110,14 @@
   }
 
   body {
-    @apply bg-background text-foreground font-['Inter'];
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   }
 
   /* Leaflet map styles */
   .leaflet-container {
-    @apply h-full w-full;
+    height: 100% !important;
+    width: 100% !important;
   }
 
   /* Custom marker styles */
