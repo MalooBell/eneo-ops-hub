@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { AppProvider, useApp } from '@/contexts/AppContext';
-import { Sidebar } from '@/components/layout/Sidebar';
+import { useApp } from '@/contexts/AppContext';
 import { InterventionMap } from '@/components/map/InterventionMap';
 import { InterventionsTable } from '@/components/interventions/InterventionsTable';
 import { AssignmentModal } from '@/components/interventions/AssignmentModal';
+import { MapFilters } from '@/components/map/MapFilters';
 import { Intervention } from '@/types';
 
 function Dashboard() {
   const { setSelectedIntervention } = useApp();
   const [assignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [interventionToAssign, setInterventionToAssign] = useState<Intervention | null>(null);
+  const [showInterventions, setShowInterventions] = useState(true);
+  const [showAgents, setShowAgents] = useState(true);
 
   const handleRowClick = (intervention: Intervention) => {
     setSelectedIntervention(intervention);
@@ -26,13 +28,23 @@ function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-background">
-      <Sidebar />
-      
+    <div className="flex flex-col h-full">
       <main className="flex-1 flex overflow-hidden">
         {/* Carte - 70% */}
-        <div className="flex-1 p-6">
-          <InterventionMap onAssignIntervention={handleAssignIntervention} />
+        <div className="flex-1 p-6 space-y-4">
+          <MapFilters
+            showInterventions={showInterventions}
+            showAgents={showAgents}
+            onToggleInterventions={setShowInterventions}
+            onToggleAgents={setShowAgents}
+          />
+          <div className="flex-1">
+            <InterventionMap 
+              onAssignIntervention={handleAssignIntervention}
+              showInterventions={showInterventions}
+              showAgents={showAgents}
+            />
+          </div>
         </div>
         
         {/* Liste des interventions - 30% */}
@@ -54,11 +66,7 @@ function Dashboard() {
 }
 
 const Index = () => {
-  return (
-    <AppProvider>
-      <Dashboard />
-    </AppProvider>
-  );
+  return <Dashboard />;
 };
 
 export default Index;

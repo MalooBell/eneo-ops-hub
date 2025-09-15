@@ -101,9 +101,11 @@ function InterventionPopup({ intervention, onAssign }: InterventionPopupProps) {
 
 interface InterventionMapProps {
   onAssignIntervention: (intervention: Intervention) => void;
+  showInterventions?: boolean;
+  showAgents?: boolean;
 }
 
-export function InterventionMap({ onAssignIntervention }: InterventionMapProps) {
+export function InterventionMap({ onAssignIntervention, showInterventions = true, showAgents = true }: InterventionMapProps) {
   const { interventions, agents } = useApp();
 
   // Centre sur le Cameroun
@@ -129,7 +131,7 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
         <MapController />
 
         {/* Marqueurs d'interventions */}
-        {safeInterventions.length > 0 && safeInterventions.map((intervention) => (
+        {showInterventions && safeInterventions.length > 0 && safeInterventions.map((intervention) => (
           <Marker
             key={`intervention-${intervention.id}`}
             position={[intervention.latitude, intervention.longitude]}
@@ -145,7 +147,7 @@ export function InterventionMap({ onAssignIntervention }: InterventionMapProps) 
         ))}
 
         {/* Marqueurs d'agents */}
-        {safeAgents.length > 0 && safeAgents.map((agent) => (
+        {showAgents && safeAgents.length > 0 && safeAgents.map((agent) => (
           <Marker
             key={`agent-${agent.agentId}`}
             position={[agent.latitude, agent.longitude]}
