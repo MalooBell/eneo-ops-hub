@@ -1,13 +1,63 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState } from 'react';
+import { AppProvider, useApp } from '@/contexts/AppContext';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { InterventionMap } from '@/components/map/InterventionMap';
+import { InterventionsTable } from '@/components/interventions/InterventionsTable';
+import { AssignmentModal } from '@/components/interventions/AssignmentModal';
+import { Intervention } from '@/types';
+
+function Dashboard() {
+  const { setSelectedIntervention } = useApp();
+  const [assignmentModalOpen, setAssignmentModalOpen] = useState(false);
+  const [interventionToAssign, setInterventionToAssign] = useState<Intervention | null>(null);
+
+  const handleRowClick = (intervention: Intervention) => {
+    setSelectedIntervention(intervention);
+  };
+
+  const handleAssignIntervention = (intervention: Intervention) => {
+    setInterventionToAssign(intervention);
+    setAssignmentModalOpen(true);
+  };
+
+  const handleCloseAssignmentModal = () => {
+    setAssignmentModalOpen(false);
+    setInterventionToAssign(null);
+  };
+
+  return (
+    <div className="flex h-screen bg-background">
+      <Sidebar />
+      
+      <main className="flex-1 flex overflow-hidden">
+        {/* Carte - 70% */}
+        <div className="flex-1 p-6">
+          <InterventionMap onAssignIntervention={handleAssignIntervention} />
+        </div>
+        
+        {/* Liste des interventions - 30% */}
+        <div className="w-96 p-6 pl-0">
+          <InterventionsTable 
+            onRowClick={handleRowClick}
+            onAssignIntervention={handleAssignIntervention}
+          />
+        </div>
+      </main>
+
+      <AssignmentModal
+        intervention={interventionToAssign}
+        isOpen={assignmentModalOpen}
+        onClose={handleCloseAssignmentModal}
+      />
+    </div>
+  );
+}
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <AppProvider>
+      <Dashboard />
+    </AppProvider>
   );
 };
 

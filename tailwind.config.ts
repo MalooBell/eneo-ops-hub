@@ -22,6 +22,12 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+        },
+        status: {
+          nouveau: "hsl(var(--status-nouveau))",
+          assigne: "hsl(var(--status-assigne))",
+          resolu: "hsl(var(--status-resolu))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
